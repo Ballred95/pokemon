@@ -10,7 +10,7 @@ const mainContainer = document.querySelector('.container')
 
 function cardFront(pokedata) {
   let cardFront = document.createElement('div')
-  cardFront.className = 'card__face card __face--front'
+  cardFront.className = 'card __face--front'
   let figure = document.createElement('figure')
 
   let name = document.createElement('figcaption')
@@ -21,7 +21,7 @@ function cardFront(pokedata) {
   if (pokedata.id !== 0) {
     image.src = `images/images/${pokedata.imageID}${upperName}.png`
   } else {
-    image.src = `vectorcon.svg`
+    image.src = `pokeball_PNG21.png`
   }
 
   figure.appendChild(name)
@@ -30,22 +30,53 @@ function cardFront(pokedata) {
   return cardFront
 }
 
-function cardBack(pokedata) {
+function cardBackInfo(pokedata) {
+  let infoDiv = document.createElement('div')
+let moveOne = document.createElement('p')
+let moveTwo = document.createElement('p')
+let moveThree = document.createElement('p')
+let moveFour = document.createElement('p')
+moveOne.textContent = pokedata.moves[0].move.name
+moveTwo.textContent = pokedata.moves[1].move.name
+moveThree.textContent = pokedata.moves[2].move.name
+moveFour.textContent = pokedata.moves[3].move.name
+infoDiv.appendChild(moveOne)
+infoDiv.appendChild(moveTwo)
+infoDiv.appendChild(moveThree)
+infoDiv.appendChild(moveFour)
+return infoDiv
+
+}
+
+function cardBack(pokedata) { 
   let cardBack = document.createElement('div')
-  cardBack.classname = 'card__face card__face--back'
+  cardBack.className = 'card__face--back'
+  let backImage = document.createElement('img')
+  backImage.src = `pokeball_PNG21.png`
+  backImage.className = 'backImage'
+  cardBack.appendChild(backImage)
+  cardBack.appendChild(cardBackInfo(pokedata))
+  // cardBack.className = "back"
+  console.log(cardBack)
   return cardBack
 }
 
 function createPokeCard(pokedata) {
-  console.log(pokedata.id)
+  
   let scene = document.createElement('div')
   let card = document.createElement('div')
   scene.className = 'scene'
   card.className = 'card'
+
+  card.addEventListener( 'click', function() {
+    card.classList.toggle('is-flipped');
+  });
+
   card.appendChild(cardFront(pokedata))
   card.appendChild(cardBack(pokedata))
   scene.appendChild(card)
   mainContainer.appendChild(scene)
+
 }
 
 const allFetchedPokemon = []
@@ -56,6 +87,7 @@ pokemon.forEach(singleMon => {
       return response.json()
     })
     .then(function(myJson) {
+      
       allFetchedPokemon.push(myJson)
       createPokeCard(matchIdToImage(myJson))
     })
@@ -95,8 +127,8 @@ function fetchSinglePokemon(id) {
     })
 }
 
-const newPokemonButton = document.querySelector('button')
-newPokemonButton.addEventListener('click', function() {
-  let newPokeName = prompt('entter new name')
-  createPokeCard(new Pokemon(newPokeName))
+const selectPokemonButton = document.querySelector('#fetchPokemon')
+
+selectPokemonButton.addEventListener('click', function() { let pokemonID = prompt('Enter an ID of an existing pokemon:')
+fetchSinglePokemon(pokemonID)
 })
